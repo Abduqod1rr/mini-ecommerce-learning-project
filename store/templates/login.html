@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <link rel="stylesheet" href="/static/store/css/login.css">
+</head>
+<body>
+  <div class="login-container">
+    <h2>🔑 Tizimga kirish</h2>
+    {% if error %}
+      <p class="error">{{ error }}</p>
+    {% endif %}
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" name="username" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Parol</label>
+        <input type="password" name="password" required>
+      </div>
+      <button type="submit">Kirish</button>
+    </form>
+  </div>
+</body>
+</html>

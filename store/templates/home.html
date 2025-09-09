@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="/static/store/css/home.css">
+</head>
+<body>
+    <!-- 🔥 Navbar -->
+    <header class="navbar">
+        <div class="logo">🛍️ E-Commerce</div>
+        <form class="search-bar">
+            <input type="text" placeholder="Mahsulot qidiring...">
+            <button type="submit">🔍</button>
+        </form>
+        <nav class="nav-links">
+            <a href="#">🏠 Bosh sahifa</a>
+            <a href="cart/">🛒 Savat</a>
+            <a href="#">👤 Profil</a>
+        </nav>
+    </header>
+
+    <!-- 🔥 Content -->
+    <main class="home-container">
+        <h1>Salom, {{ user.username }}!</h1>
+
+        {% if product %}
+            <div class="product-grid">
+                {% for p in product %}
+                <div class="product-card">
+                    <div class="image-wrapper">
+                        <img src="{{ p.image.url }}" alt="{{ p.title }}">
+                    </div>
+                    <h2>{{ p.title }}</h2>
+                    <p class="price">{{ p.price|floatformat:0 }} so'm</p>
+                    <p class="about">{{ p.about|truncatewords:15 }}</p>
+
+                    <div class="actions">
+                        <form action="{% url 'add_pr_to_cart' p.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-cart">🛒 Savatchaga qo‘sh</button>
+                        </form>
+                        <form action="{% url 'add_pr_to_order' p.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-buy">⚡ Hoziroq sotib olish</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty">Mahsulotlar yo‘q 😢</p>
+        {% endif %}
+    </main>
+</body>
+</html>

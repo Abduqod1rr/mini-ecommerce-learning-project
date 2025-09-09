@@ -1,0 +1,222 @@
+<!-- store/templates/cart.html -->
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Savat — E-Commerce</title>
+
+  <style>
+    /* ===== Base ===== */
+    :root{
+      --bg:#f4f6fb;
+      --card:#ffffff;
+      --muted:#6b7280;
+      --accent:#0d6efd;
+      --success:#16a34a;
+      --danger:#ef4444;
+      --shadow: 0 6px 18px rgba(15,23,42,0.06);
+      --radius:12px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
+    body{background:var(--bg);color:#111;padding:28px;}
+
+    /* ===== Container ===== */
+    .cart-wrap{
+      max-width:1100px;
+      margin:0 auto;
+      display:grid;
+      grid-template-columns: 1fr 360px;
+      gap:28px;
+      align-items:start;
+    }
+
+    /* ===== Left: items ===== */
+    .items {
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px;
+    }
+    .items h2{margin:0 0 12px;font-size:1.25rem}
+    .empty {
+      padding:36px;
+      text-align:center;
+      color:var(--muted);
+    }
+
+    .item {
+      display:flex;
+      gap:14px;
+      padding:12px 8px;
+      border-bottom:1px solid rgba(0,0,0,0.04);
+      align-items:center;
+    }
+    .item:last-child{border-bottom:0}
+    .thumb{
+      width:96px;
+      height:80px;
+      border-radius:10px;
+      overflow:hidden;
+      flex-shrink:0;
+      background:linear-gradient(180deg,#eee,#ddd);
+      display:flex;align-items:center;justify-content:center;
+    }
+    .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+
+    .meta{flex:1;min-width:0}
+    .meta h3{margin:0;font-size:1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .meta p{margin:6px 0 0;color:var(--muted);font-size:.92rem}
+    .price{font-weight:700;color:var(--success);margin-top:6px}
+
+    /* quantity + actions */
+    .controls{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      margin-left:8px;
+      flex-direction:column;
+      justify-content:center;
+    }
+    .qty {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      background:#f8fafc;
+      border-radius:8px;
+      padding:6px;
+    }
+    .qty button{
+      border:0;background:transparent;padding:6px 8px;cursor:pointer;font-weight:700;
+    }
+    .qty input{
+      width:42px;text-align:center;border:0;background:transparent;font-weight:700;
+    }
+
+    .small-btn{
+      background:transparent;border:0;color:var(--muted);cursor:pointer;font-size:.92rem;
+    }
+    .remove{color:var(--danger);font-weight:700}
+
+    /* ===== Right: summary ===== */
+    .summary {
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px;
+      height:fit-content;
+      position:sticky;
+      top:24px;
+    }
+    .summary h3{margin:0 0 10px}
+    .summary .row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed rgba(0,0,0,0.04)}
+    .summary .total{font-size:1.15rem;font-weight:800;margin-top:12px}
+    .checkout-btn{
+      display:block;
+      width:100%;
+      padding:12px;
+      margin-top:14px;
+      border-radius:10px;
+      border:0;
+      background:linear-gradient(180deg,var(--accent), #0b5ed7);
+      color:white;font-weight:700;cursor:pointer;
+      box-shadow: 0 8px 20px rgba(13,110,253,0.12);
+    }
+    .checkout-btn:disabled{opacity:.6;cursor:not-allowed}
+
+    /* helper row */
+    .flex-row{display:flex;justify-content:space-between;align-items:center}
+
+    /* responsive */
+    @media (max-width:980px){
+      .cart-wrap{grid-template-columns:1fr; padding:12px; gap:16px}
+      .summary{position:relative;top:0}
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cart-wrap">
+    <!-- ===== Items ===== -->
+    <section class="items" aria-labelledby="cart-heading">
+      <h2 id="cart-heading">Savatingiz</h2>
+
+      {% if not cart_u %}
+        <div class="empty">Sizning savatchingiz bo‘sh 🛒<br><a href="{% url 'home' %}">Do‘konga qaytish</a></div>
+      {% else %}
+
+        <!-- loop through cart items -->
+        {% for item in cart_u %}
+          <div class="item" data-item-id="{{ item.id }}">
+            <div class="thumb">
+              {% if item.product.image %}
+                <img src="{{ item.product.image.url }}" alt="{{ item.product.title }}">
+              {% else %}
+                <span style="font-size:.9rem;color:var(--muted)">No image</span>
+              {% endif %}
+            </div>
+
+            <div class="meta">
+              <h3>{{ item.product.title }}</h3>
+              <p>({{ item.product.category.name }}) • Stock: {{ item.product.stock}} </p>
+              <div class="price">{{ item.price|floatformat:0 }} so'm</div>
+            </div>
+
+            
+               
+
+              
+        {% endfor %}
+
+      {% endif %}
+    </section>
+
+    <!-- ===== Summary ===== -->
+    <aside class="summary" aria-labelledby="summary-heading">
+      <h3 id="summary-heading">Buyurtma xulosasi</h3>
+
+      <div class="row">
+        <div>Mahsulotlar ({{ cart_items|length }})</div>
+        <div>{{ cart_total|floatformat:0 }} so'm</div>
+      </div>
+
+      <!-- shipping placeholder -->
+      <div class="row">
+        <div>Yetkazib berish</div>
+        <div>0 so'm</div>
+      </div>
+
+      <div class="row">
+        <div>Jami</div>
+        <div class="total">{{ cart_total|floatformat:0 }} so'm</div>
+    
+        <a href="{% url 'home' %}">Do‘konga qaytish</a>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ===== Minimal JS: connects +/- buttons to the quantity input and auto-submit the form ===== -->
+  <script>
+    document.addEventListener('click', function(e){
+      const inc = e.target.closest('.inc');
+      const dec = e.target.closest('.dec');
+
+      if(inc || dec){
+        const btn = inc || dec;
+        const parent = btn.closest('.item');
+        const form = parent.querySelector('.qty-form');
+        const input = form.querySelector('input[name="quantity"]');
+        let val = parseInt(input.value) || 1;
+        if(inc) val = val + 1;
+        if(dec) val = Math.max(1, val - 1);
+        input.value = val;
+
+        // auto-submit form to update quantity
+        form.querySelector('button[type="submit"]').click();
+      }
+    });
+  </script>
+
+</body>
+</html>
