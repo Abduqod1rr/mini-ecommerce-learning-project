@@ -6,19 +6,84 @@
     <link rel="stylesheet" href="/static/store/css/home.css">
 </head>
 <body>
-    <!-- 🔥 Navbar -->
-    <header class="navbar">
-        <div class="logo">🛍️ E-Commerce</div>
-        <form class="search-bar">
-            <input type="text" placeholder="Mahsulot qidiring...">
-            <button type="submit">🔍</button>
+   
+    <br>
+   <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home - E-Commerce</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Qo'shimcha custom CSS */
+        .navbar {
+            background: linear-gradient(90deg, #007bff, #00c6ff);
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+        .navbar a {
+            color: gray;
+            font-weight: 500;
+            transition: color 0.2s ease-in-out;
+        }
+        .navbar a:hover {
+            color: #ffe082;
+        }
+        .search-input {
+            border-radius: 8px 0 0 8px;
+            color:gray;
+        }
+        .search-btn {
+            border-radius: 0 8px 8px 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Navbar -->
+    <header class="navbar flex justify-between items-center shadow-lg">
+        <!-- Logo -->
+        <div class="text-2xl font-bold text-white">🛍️ E-Commerce</div>
+
+        <!-- Search --> 
+        <form method="get" action="{% url 'search' %}" class="flex">
+            <input 
+                type="text bg-green"  
+                name="q" 
+                placeholder="🔍 Mahsulot qidiring..."
+                class="search-input px-3 py-2 w-64 focus:outline-none"
+            >
+            <button 
+                type="submit"
+                class="search-btn bg-yellow-400 text-red px-4 hover:bg-grey-500">
+                Qidirish
+            </button>
         </form>
-        <nav class="nav-links">
-            <a href="#">🏠 Bosh sahifa</a>
-            <a href="cart/">🛒 Savat</a>
-            <a href="#">👤 Profil</a>
+
+        <!-- Links -->
+        <nav class="space-x-6">
+            <a href="{% url 'home' %}">🏠 Bosh sahifa</a>
+            <a href="{% url 'seecart' %}">🛒 Savat</a>
+          
         </nav>
     </header>
+
+    <!-- Products -->
+    <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+        {% for product in products %}
+        <div class="bg-white shadow rounded-lg p-4">
+            <img src="{{ product.image.url }}" alt="{{ product.title }}" class="w-full h-48 object-cover rounded-lg">
+            <h2 class="text-lg font-bold mt-2">{{ product.title }}</h2>
+            <p class="text-gray-700">${{ product.price }}</p>
+            <p class="text-sm text-gray-500">{{ product.about }}</p>
+        </div>
+        {% empty %}
+        {% endfor %}
+    </div>
+
+</body>
+</html>
 
     <!-- 🔥 Content -->
     <main class="home-container">

@@ -159,7 +159,7 @@
 
             <div class="meta">
               <h3>{{ item.product.title }}</h3>
-              <p>({{ item.product.category.name }}) • Stock: {{ item.product.stock}} </p>
+              <p>({{ item.quantity }}) • Stock: {{ item.product.stock}} </p>
               <div class="price">{{ item.price|floatformat:0 }} so'm</div>
             </div>
 
@@ -180,6 +180,40 @@
         <div>Mahsulotlar ({{ cart_items|length }})</div>
         <div>{{ cart_total|floatformat:0 }} so'm</div>
       </div>
+      <meta charset="UTF-8">
+    <title>Mening Buyurtmam</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f4f6f9; }
+        h1 { color: #007bff; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: center; }
+        th { background: #007bff; color: white; }
+        tr:nth-child(even) { background: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <h1>Mening Buyurtmam</h1>
+
+    {% if order_u %}
+    <table>
+        <tr>
+            <th>Mahsulot</th>
+            <th>Narx</th>
+            <th>Soni</th>
+            <th>Jami</th>
+        </tr>
+        {% for item in order_u %}
+        <tr>
+            <td>{{ item.product.title }}</td>
+            <td>{{ item.price }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.quantity }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+        <p>Buyurtma topilmadi 😢</p>
+    {% endif %}
 
       <!-- shipping placeholder -->
       <div class="row">

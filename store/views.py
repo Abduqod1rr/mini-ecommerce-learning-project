@@ -26,7 +26,7 @@ def loginvw(request):
 
 
 def add_product(request):  
-    if not request.user.is_authenticated or request.user.role != "seller":
+    if not request.user.is_authenticated or request.user.role != "seller" or request.user.role !="admin":
         return HttpResponseForbidden("Faqat seller mahsulot qo'sha oladi!")
 
     if request.method=="POST":
@@ -42,7 +42,7 @@ def add_product(request):
                               price=pr_price,
                               image=pr_image,stock=pr_stock,
                               category=category)
-    return HttpResponse("Mahsulot qo'shildi")
+    return render(request,'addproduct.html')
 
 def add_pr_to_cart(request,product_id):
     product=Product.objects.get(id=product_id)
@@ -50,8 +50,9 @@ def add_pr_to_cart(request,product_id):
 
     cart_item ,created=CartItem.objects.get_or_create(cart=cart,product=product,defaults={"price":product.price , "quantity":1})
     if not created:
-        cart_item.quantity+=1
-        cart_item.save()
+        while cart_item.quantity < product.stock:
+         cart_item.quantity+=1
+         cart_item.save()
 
     return redirect("home")
     
@@ -90,7 +91,18 @@ def register_vw(request):
     return render(request, "register.html", {"form": form})
 
 def see_cart(request):
+    order,created=Order.objects.get_or_create(user=request.user)
+    order_u=OrderItem.objects.filter(order=order)
+   
     cart,created=Cart.objects.get_or_create(user=request.user)
     cart_u=CartItem.objects.filter(cart=cart)
-    return render(request,'cart.html',{"cart_u":cart_u})
+    return render(request,'cart.html',{"cart_u":cart_u,"order_u":order_u})
 
+def search(request):
+    query=request.GET.get("q")
+    if query :
+        products=Product.objects.filter(title__icontains=query)
+    else :
+        products=Product.objects.all()
+
+    return render(request , "home.html",{"products":products})
