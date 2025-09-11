@@ -1,0 +1,25 @@
+<!-- store/templates/product_confirm_delete.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mahsulotni o'chirish</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md text-center">
+        <h1 class="text-2xl font-bold mb-4">Mahsulotni o'chirish</h1>
+        <p class="mb-6">Siz rostdan <span class="font-semibold">{{ object.title }}</span> mahsulotini o'chirmoqchimisiz?</p>
+        
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600 mr-2">
+                Ha, o'chirilsin
+            </button>
+            <a href="{% url 'home' %}" class="bg-gray-300 text-gray-800 px-6 py-2 rounded hover:bg-gray-400">
+                Bekor qilish
+            </a>
+        </form>
+    </div>
+</body>
+</html>

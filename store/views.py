@@ -1,10 +1,15 @@
-from django.shortcuts import render, HttpResponse ,redirect ,get_object_or_404 
-from .models import Product, Cart,CartItem ,Category ,Order ,OrderItem
+from django.forms import BaseModelForm
+from django.shortcuts import render, HttpResponse ,redirect ,get_object_or_404 ,get_list_or_404
+from .models import Product, Cart,CartItem ,Category ,Order ,OrderItem 
 from django.http import HttpResponseForbidden 
 from django.contrib.auth import logout ,login ,authenticate 
 from users.models import CustomUser
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required 
+from django.contrib.auth.mixins import LoginRequiredMixin ,UserPassesTestMixin
 from  users.forms import CustomRegisterForm
+from django.views.generic import ListView,UpdateView, GenericViewError,DeleteView,CreateView
+from .forms import ProductForm
+from django.urls import reverse_lazy
 # Create your views here.
 
 @login_required(login_url='/login/')
@@ -25,24 +30,20 @@ def loginvw(request):
      return render(request,"login.html")
 
 
-def add_product(request):  
-    if not request.user.is_authenticated or request.user.role != "seller" or request.user.role !="admin":
-        return HttpResponseForbidden("Faqat seller mahsulot qo'sha oladi!")
+from django.contrib.auth import get_user_model
+from store.models import Product
 
-    if request.method=="POST":
-        product_title=request.POST.get("title")
-        product_about=request.POST.get("about")
-        pr_price=request.POST.get("price")
-        pr_image=request.FILES.get("image")
-        pr_stock=request.POST.get("stock")
-        category_id=request.POST.get("category_id") 
-        category=Category.objects.get(id=category_id)
-        Product.objects.create(title=product_title,
-                              about=product_about,
-                              price=pr_price,
-                              image=pr_image,stock=pr_stock,
-                              category=category)
-    return render(request,'addproduct.html')
+
+class AddProductView(LoginRequiredMixin,CreateView):
+    model=Product
+    form_class=ProductForm
+    template_name="addproduct.html"
+    success_url=reverse_lazy("home")
+
+    def form_valid(self, form):
+        form.instance.seller=self.request.user
+        return super().form_valid(form)
+
 
 def add_pr_to_cart(request,product_id):
     product=Product.objects.get(id=product_id)
@@ -66,14 +67,26 @@ def add_pr_to_order(request,product_id):
         order_item.save()
 
      return redirect("home")
-
+@login_required
 def dell_product(request,product_id):
     product=get_object_or_404(Product, id=product_id)
-    if not request.user.seller and not hasattr(request.user, "seller"):
-        return HttpResponseForbidden("Sizda bu mahsulotni o‘chirish huquqi yo‘q!")
+    
+    if product.seller != request.user:
+       return HttpResponseForbidden("Sizda bu mahsulotni o‘chirish huquqi yo‘q!")
 
     product.delete()
+    return redirect("home")
 
+class DeleteproductView(LoginRequiredMixin,UserPassesTestMixin,DeleteView):
+   model=Product
+   template_name="delete.html"
+   success_url=reverse_lazy("home")
+    
+   def test_func(self):
+        pr = self.get_object()
+        return pr.seller == self.request.user #type: ignore
+   
+    
 def logout_vw(request):
     logout(request)
     return redirect("login")

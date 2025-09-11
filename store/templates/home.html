@@ -73,7 +73,7 @@
     <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
         {% for product in products %}
         <div class="bg-white shadow rounded-lg p-4">
-            <img src="{{ product.image.url }}" alt="{{ product.title }}" class="w-full h-48 object-cover rounded-lg">
+            <img src="{{ product.image.url }}"  alt="{{ product.title }}"  class="w-48 h-48 object-cover rounded-lg">
             <h2 class="text-lg font-bold mt-2">{{ product.title }}</h2>
             <p class="text-gray-700">${{ product.price }}</p>
             <p class="text-sm text-gray-500">{{ product.about }}</p>
@@ -90,11 +90,15 @@
         <h1>Salom, {{ user.username }}!</h1>
 
         {% if product %}
-            <div class="product-grid">
+    <div class="max-w-8xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {% for p in product %}
                 <div class="product-card">
                     <div class="image-wrapper">
-                        <img src="{{ p.image.url }}" alt="{{ p.title }}">
+                        <img src="{{ p.image.url }}" 
+                                 alt="{{ p.title }}" 
+                                 style=" height:200px; width:3000px; object-fit:cover; border-radius:9px">
+
                     </div>
                     <h2>{{ p.title }}</h2>
                     <p class="price">{{ p.price|floatformat:0 }} so'm</p>
@@ -103,7 +107,7 @@
                     <div class="actions">
                         <form action="{% url 'add_pr_to_cart' p.id %}" method="post">
                             {% csrf_token %}
-                            <button type="submit" class="btn-cart">🛒 Savatchaga qo‘sh</button>
+                            <button type="submit" class="btn-cart">🛒 Savatchaga qo‘sh</button style="border-radius:9px;">
                         </form>
                         <form action="{% url 'add_pr_to_order' p.id %}" method="post">
                             {% csrf_token %}
@@ -111,8 +115,10 @@
                         </form>
                     </div>
                 </div>
+        
                 {% endfor %}
             </div>
+    </div>    
         {% else %}
             <p class="empty">Mahsulotlar yo‘q 😢</p>
         {% endif %}

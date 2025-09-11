@@ -1,6 +1,8 @@
 from django.db import models
-from django.contrib.auth.models import User ,AbstractUser
+from django.contrib.auth.models import User ,AbstractUser 
 from django.conf import settings
+
+from users.models import CustomUser 
 # Create your models here.
     
 class Category(models.Model):   
@@ -19,7 +21,13 @@ class Product(models.Model):
     created_at=models.DateTimeField(auto_now_add=True)
     category=models.ForeignKey(Category,on_delete=models.CASCADE,related_name="products")
     is_active=models.BooleanField(default=True)
- 
+    seller=models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE,
+                             related_name="products",
+                             null=True,
+                             blank=True
+                             
+                             )
     def __str__(self):
         return self.title
     
