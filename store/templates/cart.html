@@ -133,6 +133,28 @@
       .cart-wrap{grid-template-columns:1fr; padding:12px; gap:16px}
       .summary{position:relative;top:0}
     }
+    .item {
+  display: flex;
+  gap: 14px;
+  padding: 12px 8px;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+  align-items: flex-start;  /* ustiga chiqishni to‘xtatadi */
+}
+
+.meta h3 {
+  margin: 0;
+  font-size: 1rem;
+  white-space: normal;   /* matn wrap bo‘ladi */
+  word-break: break-word; /* juda uzun so‘zlarni bo‘lib tashlaydi */
+}
+
+.meta p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: .92rem;
+  white-space: normal;   /* bu ham satrni bo‘lib beradi */
+}
+
   </style>
 </head>
 <body>

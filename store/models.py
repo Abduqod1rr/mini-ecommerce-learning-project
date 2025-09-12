@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User ,AbstractUser 
 from django.conf import settings
-
+from django.urls import reverse
 from users.models import CustomUser 
 # Create your models here.
     
@@ -21,7 +21,7 @@ class Product(models.Model):
     created_at=models.DateTimeField(auto_now_add=True)
     category=models.ForeignKey(Category,on_delete=models.CASCADE,related_name="products")
     is_active=models.BooleanField(default=True)
-    seller=models.ForeignKey(settings.AUTH_USER_MODEL,
+    seller=models.ForeignKey(CustomUser,
                              on_delete=models.CASCADE,
                              related_name="products",
                              null=True,
@@ -29,7 +29,7 @@ class Product(models.Model):
                              
                              )
     def __str__(self):
-        return self.title
+        return self.title , self.seller
     
 class Cart(models.Model):
     user=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)

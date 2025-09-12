@@ -1,15 +1,16 @@
 from django.forms import BaseModelForm
 from django.shortcuts import render, HttpResponse ,redirect ,get_object_or_404 ,get_list_or_404
 from .models import Product, Cart,CartItem ,Category ,Order ,OrderItem 
-from django.http import HttpResponseForbidden 
+from django.http import HttpResponseForbidden ,Http404
 from django.contrib.auth import logout ,login ,authenticate 
 from users.models import CustomUser
 from django.contrib.auth.decorators import login_required 
-from django.contrib.auth.mixins import LoginRequiredMixin ,UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin ,UserPassesTestMixin ,AccessMixin
 from  users.forms import CustomRegisterForm
 from django.views.generic import ListView,UpdateView, GenericViewError,DeleteView,CreateView
 from .forms import ProductForm
 from django.urls import reverse_lazy
+from typing import cast
 # Create your views here.
 
 @login_required(login_url='/login/')
@@ -67,6 +68,7 @@ def add_pr_to_order(request,product_id):
         order_item.save()
 
      return redirect("home")
+
 @login_required
 def dell_product(request,product_id):
     product=get_object_or_404(Product, id=product_id)
@@ -80,13 +82,25 @@ def dell_product(request,product_id):
 class DeleteproductView(LoginRequiredMixin,UserPassesTestMixin,DeleteView):
    model=Product
    template_name="delete.html"
+
    success_url=reverse_lazy("home")
     
    def test_func(self):
-        pr = self.get_object()
-        return pr.seller == self.request.user #type: ignore
+        pr = cast(Product,self.get_object())
+        return self.request.user == pr.seller 
    
+
+class UpdateproductView(LoginRequiredMixin,UserPassesTestMixin,UpdateView):
+   model=Product
+   template_name="updateproduct.html"
+   fields=['title','image','price','about']
+   success_url=reverse_lazy("home")
     
+   def test_func(self):
+        pr = cast(Product,self.get_object())
+        if pr:
+         return self.request.user == pr.seller 
+        return Http404
 def logout_vw(request):
     logout(request)
     return redirect("login")
