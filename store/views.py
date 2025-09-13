@@ -7,7 +7,7 @@ from users.models import CustomUser
 from django.contrib.auth.decorators import login_required 
 from django.contrib.auth.mixins import LoginRequiredMixin ,UserPassesTestMixin ,AccessMixin
 from  users.forms import CustomRegisterForm
-from django.views.generic import ListView,UpdateView, GenericViewError,DeleteView,CreateView
+from django.views.generic import ListView,UpdateView, GenericViewError,DeleteView,CreateView 
 from .forms import ProductForm
 from django.urls import reverse_lazy
 from typing import cast
@@ -32,7 +32,7 @@ def loginvw(request):
 
 
 from django.contrib.auth import get_user_model
-from store.models import Product
+
 
 
 class AddProductView(LoginRequiredMixin,CreateView):
