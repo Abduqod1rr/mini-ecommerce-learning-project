@@ -1,5 +1,6 @@
-# Python image
-FROM python:3.13.5
+
+FROM python:3.12-slim
+RUN apt-get update && apt-get upgrade -y
 
 # Ishchi papka
 WORKDIR /app
