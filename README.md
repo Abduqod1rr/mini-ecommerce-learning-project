@@ -75,7 +75,7 @@ Deployment: Docker (Gunicorn + Nginx)
 
 Clone repo:
 
-git clone https://github.com/username/ecommerce.git
+git clone https://github.com/abduqod1rr/ecommerce.git
 cd ecommerce
 
 
@@ -116,3 +116,4 @@ Build and run with Docker:
 
 docker build -t ecommerce .
 docker run -p 8000:8000 ecommerce
+
