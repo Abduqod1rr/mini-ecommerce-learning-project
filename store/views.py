@@ -128,8 +128,7 @@ def see_cart(request):
 def search(request):
      query=request.GET.get("q")
      if query :
-        products=Product.objects.filter(title__icontains=query)
+        product=Product.objects.filter(title__icontains=query)
      else :
-        products=Product.objects.all()
-
-     return render(request , "home.html",{"products":products})
+        product=Product.objects.all()
+     return render(request , "home.html",{"product":product})
