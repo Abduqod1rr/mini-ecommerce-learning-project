@@ -40,11 +40,11 @@ class AddProductView(LoginRequiredMixin,CreateView):
     form_class=ProductForm
     template_name="addproduct.html"
     success_url=reverse_lazy("home")
-
+    @login_required(login_url='login')
     def form_valid(self, form):
         form.instance.seller=self.request.user
         return super().form_valid(form)
-
+        
 
 def add_pr_to_cart(request,product_id):
     product=Product.objects.get(id=product_id)
